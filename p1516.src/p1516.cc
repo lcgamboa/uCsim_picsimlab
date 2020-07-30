@@ -379,10 +379,10 @@ cl_p1516::inst_alu(t_mem code)
       break;
 
     case 4: // INC
-      RC[d]->W(RC[a]->R()+1);
+      RC[d]->W(inst_ad(RC[a]->R(), 1, 0));
       break;
     case 5: // DEC
-      RC[d]->W(RC[a]->R()-1);
+      RC[d]->W(inst_ad(RC[a]->R(), ~(1), 1));
       break;
 
     case 6: // AND
@@ -478,7 +478,7 @@ cl_p1516::exec_inst(void)
   cond= (code & 0xf0000000) >> 28;
   if ((cond&1) == 1)
     {
-      u8_t flag, fv, v;
+      u8_t flag= 0, fv, v;
       switch (cond>>2)
 	{
 	case 0: flag= F&S; break;
