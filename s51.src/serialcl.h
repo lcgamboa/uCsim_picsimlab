@@ -39,6 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 
 //#include "newcmdcl.h"
 
+namespace s51{
+    
 class cl_serial_listener;
 
 class cl_serial: public cl_serial_hw
@@ -83,7 +85,9 @@ public:
   
   virtual void print_info(class cl_console_base *con);
 };
+}
 
+using namespace s51;
 
 #endif
 

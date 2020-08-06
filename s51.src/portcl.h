@@ -36,7 +36,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 
 #include "port_hwcl.h"
 
-
+namespace s51{
+    
 enum port_cfg {
   port_on		= 0, // RW
   port_pin		= 1, // RW
@@ -71,8 +72,9 @@ public:
   //virtual int tick(int cycles);
   virtual void print_info(class cl_console_base *con);
 };
+}
 
-
+using namespace s51;
 #endif
 
 /* End of s51.src/portcl.h */

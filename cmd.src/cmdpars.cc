@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.6.3.  */
+/* A Bison parser, made by GNU Bison 3.7.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
@@ -49,7 +49,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.6.3"
+#define YYBISON_VERSION "3.7"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -651,6 +651,7 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  115
 
+/* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   303
 
 
@@ -1122,7 +1123,7 @@ yydestruct (const char *yymsg,
 }
 
 
-/* The lookahead symbol.  */
+/* Lookahead token kind.  */
 int yychar;
 
 /* The semantic value of the lookahead symbol.  */
@@ -1140,34 +1141,30 @@ int yynerrs;
 int
 yyparse (void)
 {
-    yy_state_fast_t yystate;
+    yy_state_fast_t yystate = 0;
     /* Number of tokens to shift before error messages enabled.  */
-    int yyerrstatus;
+    int yyerrstatus = 0;
 
-    /* The stacks and their tools:
-       'yyss': related to states.
-       'yyvs': related to semantic values.
-
-       Refer to the stacks through separate pointers, to allow yyoverflow
+    /* Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
     /* Their size.  */
-    YYPTRDIFF_T yystacksize;
+    YYPTRDIFF_T yystacksize = YYINITDEPTH;
 
-    /* The state stack.  */
+    /* The state stack: array, bottom, top.  */
     yy_state_t yyssa[YYINITDEPTH];
-    yy_state_t *yyss;
-    yy_state_t *yyssp;
+    yy_state_t *yyss = yyssa;
+    yy_state_t *yyssp = yyss;
 
-    /* The semantic value stack.  */
+    /* The semantic value stack: array, bottom, top.  */
     YYSTYPE yyvsa[YYINITDEPTH];
-    YYSTYPE *yyvs;
-    YYSTYPE *yyvsp;
+    YYSTYPE *yyvs = yyvsa;
+    YYSTYPE *yyvsp = yyvs;
 
   int yyn;
   /* The return value of yyparse.  */
   int yyresult;
-  /* Lookahead token as an internal (translated) token number.  */
+  /* Lookahead symbol kind.  */
   yysymbol_kind_t yytoken = YYSYMBOL_YYEMPTY;
   /* The variables used to return semantic value and location from the
      action routines.  */
@@ -1180,15 +1177,6 @@ yyparse (void)
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
-
-  yynerrs = 0;
-  yystate = 0;
-  yyerrstatus = 0;
-
-  yystacksize = YYINITDEPTH;
-  yyssp = yyss = yyssa;
-  yyvsp = yyvs = yyvsa;
-
 
   YYDPRINTF ((stderr, "Starting parse\n"));
 
@@ -1390,93 +1378,93 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2:
+  case 2: /* ucsim_grammar: expr  */
 #line 76 "cmdpars.y"
      { application->/*dd_printf("%d\n", $1)*/expr_result=(yyvsp[0].number); }
+#line 1385 "y.tab.c"
+    break;
+
+  case 3: /* primary_expr: memory  */
+#line 142 "cmdpars.y"
+         { (yyval.number)= (yyvsp[0].memory).memory->read((yyvsp[0].memory).address); }
+#line 1391 "y.tab.c"
+    break;
+
+  case 4: /* primary_expr: bit  */
+#line 143 "cmdpars.y"
+      { (yyval.number)= ((yyvsp[0].bit).memory->read((yyvsp[0].bit).mem_address) & (yyvsp[0].bit).mask)?1:0; }
 #line 1397 "y.tab.c"
     break;
 
-  case 3:
-#line 142 "cmdpars.y"
-         { (yyval.number)= (yyvsp[0].memory).memory->read((yyvsp[0].memory).address); }
+  case 5: /* primary_expr: PTOK_NUMBER  */
+#line 144 "cmdpars.y"
+              { (yyval.number)= (yyvsp[0].number); }
 #line 1403 "y.tab.c"
     break;
 
-  case 4:
-#line 143 "cmdpars.y"
-      { (yyval.number)= ((yyvsp[0].bit).memory->read((yyvsp[0].bit).mem_address) & (yyvsp[0].bit).mask)?1:0; }
+  case 6: /* primary_expr: PTOK_LEFT_PAREN expr PTOK_RIGHT_PAREN  */
+#line 146 "cmdpars.y"
+                                        { (yyval.number)= (yyvsp[-1].number); }
 #line 1409 "y.tab.c"
     break;
 
-  case 5:
-#line 144 "cmdpars.y"
-              { (yyval.number)= (yyvsp[0].number); }
+  case 7: /* postfix_expr: primary_expr  */
+#line 151 "cmdpars.y"
+               { (yyval.number)= (yyvsp[0].number); }
 #line 1415 "y.tab.c"
     break;
 
-  case 6:
-#line 146 "cmdpars.y"
-                                        { (yyval.number)= (yyvsp[-1].number); }
-#line 1421 "y.tab.c"
-    break;
-
-  case 7:
-#line 151 "cmdpars.y"
-               { (yyval.number)= (yyvsp[0].number); }
-#line 1427 "y.tab.c"
-    break;
-
-  case 8:
+  case 8: /* postfix_expr: memory PTOK_INC_OP  */
 #line 159 "cmdpars.y"
         {
 	  (yyval.number)= (yyvsp[-1].memory).memory->read((yyvsp[-1].memory).address);
 	  (yyvsp[-1].memory).memory->write((yyvsp[-1].memory).address, (yyval.number)+1);
 	}
-#line 1436 "y.tab.c"
+#line 1424 "y.tab.c"
     break;
 
-  case 9:
+  case 9: /* postfix_expr: memory PTOK_DEC_OP  */
 #line 165 "cmdpars.y"
         {
 	  (yyval.number)= (yyvsp[-1].memory).memory->read((yyvsp[-1].memory).address);
 	  (yyvsp[-1].memory).memory->write((yyvsp[-1].memory).address, (yyval.number)-1);
 	}
-#line 1445 "y.tab.c"
+#line 1433 "y.tab.c"
     break;
 
-  case 10:
+  case 10: /* unary_expr: postfix_expr  */
 #line 178 "cmdpars.y"
                { (yyval.number)= (yyvsp[0].number); }
-#line 1451 "y.tab.c"
+#line 1439 "y.tab.c"
     break;
 
-  case 11:
+  case 11: /* unary_expr: PTOK_INC_OP memory  */
 #line 181 "cmdpars.y"
         {
 	  (yyval.number)= (yyvsp[0].memory).memory->read((yyvsp[0].memory).address);
 	  (yyvsp[0].memory).memory->write((yyvsp[0].memory).address, (yyval.number)+1);
 	  (yyval.number)= (yyvsp[0].memory).memory->read((yyvsp[0].memory).address);
 	}
-#line 1461 "y.tab.c"
+#line 1449 "y.tab.c"
     break;
 
-  case 12:
+  case 12: /* unary_expr: PTOK_DEC_OP memory  */
 #line 188 "cmdpars.y"
         {
 	  (yyval.number)= (yyvsp[0].memory).memory->read((yyvsp[0].memory).address);
 	  (yyvsp[0].memory).memory->write((yyvsp[0].memory).address, (yyval.number)-1);
 	  (yyval.number)= (yyvsp[0].memory).memory->read((yyvsp[0].memory).address);
 	}
-#line 1471 "y.tab.c"
+#line 1459 "y.tab.c"
     break;
 
-  case 13:
+  case 13: /* unary_expr: PTOK_AMPERSAND memory  */
 #line 195 "cmdpars.y"
                        { (yyval.number)= (yyvsp[0].memory).address; }
-#line 1477 "y.tab.c"
+#line 1465 "y.tab.c"
     break;
 
-  case 14:
+  case 14: /* unary_expr: PTOK_AMPERSAND bit  */
 #line 197 "cmdpars.y"
         {
 	  (yyval.number)= (yyvsp[0].bit).bit_address;
@@ -1486,40 +1474,40 @@ yyreduce:
 	      (yyval.number)= 0;
 	    }
 	}
+#line 1478 "y.tab.c"
+    break;
+
+  case 15: /* unary_expr: PTOK_MINUS unary_expr  */
+#line 205 "cmdpars.y"
+                        { (yyval.number)= -(yyvsp[0].number); }
+#line 1484 "y.tab.c"
+    break;
+
+  case 16: /* unary_expr: PTOK_PLUS unary_expr  */
+#line 206 "cmdpars.y"
+                       { (yyval.number)= +(yyvsp[0].number); }
 #line 1490 "y.tab.c"
     break;
 
-  case 15:
-#line 205 "cmdpars.y"
-                        { (yyval.number)= -(yyvsp[0].number); }
+  case 17: /* unary_expr: PTOK_TILDE unary_expr  */
+#line 207 "cmdpars.y"
+                        { (yyval.number)= ~(yyvsp[0].number); }
 #line 1496 "y.tab.c"
     break;
 
-  case 16:
-#line 206 "cmdpars.y"
-                       { (yyval.number)= +(yyvsp[0].number); }
+  case 18: /* unary_expr: PTOK_EXCLAMATION unary_expr  */
+#line 208 "cmdpars.y"
+                              { (yyval.number)= ((yyvsp[0].number))?0:1; }
 #line 1502 "y.tab.c"
     break;
 
-  case 17:
-#line 207 "cmdpars.y"
-                        { (yyval.number)= ~(yyvsp[0].number); }
+  case 19: /* cast_expr: unary_expr  */
+#line 228 "cmdpars.y"
+             { (yyval.number)= (yyvsp[0].number); }
 #line 1508 "y.tab.c"
     break;
 
-  case 18:
-#line 208 "cmdpars.y"
-                              { (yyval.number)= ((yyvsp[0].number))?0:1; }
-#line 1514 "y.tab.c"
-    break;
-
-  case 19:
-#line 228 "cmdpars.y"
-             { (yyval.number)= (yyvsp[0].number); }
-#line 1520 "y.tab.c"
-    break;
-
-  case 20:
+  case 20: /* cast_expr: PTOK_LEFT_PAREN type_name PTOK_RIGHT_PAREN memory  */
 #line 230 "cmdpars.y"
         {
 	  (yyval.number)= (yyvsp[0].memory).memory->read((yyvsp[0].memory).address);
@@ -1532,202 +1520,202 @@ yyreduce:
 	        (yyval.number) |= ~(smask - 1);
 	    }
 	}
+#line 1524 "y.tab.c"
+    break;
+
+  case 21: /* type_name: PTOK_INT  */
+#line 244 "cmdpars.y"
+           { (yyval.number)= PTOK_INT; }
+#line 1530 "y.tab.c"
+    break;
+
+  case 22: /* multiplicative_expr: cast_expr  */
+#line 248 "cmdpars.y"
+            { (yyval.number)= (yyvsp[0].number); }
 #line 1536 "y.tab.c"
     break;
 
-  case 21:
-#line 244 "cmdpars.y"
-           { (yyval.number)= PTOK_INT; }
+  case 23: /* multiplicative_expr: multiplicative_expr PTOK_ASTERIX cast_expr  */
+#line 249 "cmdpars.y"
+                                             { (yyval.number)= (yyvsp[-2].number) * (yyvsp[0].number); }
 #line 1542 "y.tab.c"
     break;
 
-  case 22:
-#line 248 "cmdpars.y"
-            { (yyval.number)= (yyvsp[0].number); }
+  case 24: /* multiplicative_expr: multiplicative_expr PTOK_SLASH cast_expr  */
+#line 250 "cmdpars.y"
+                                           { (yyval.number)= (yyvsp[-2].number) / (yyvsp[0].number); }
 #line 1548 "y.tab.c"
     break;
 
-  case 23:
-#line 249 "cmdpars.y"
-                                             { (yyval.number)= (yyvsp[-2].number) * (yyvsp[0].number); }
+  case 25: /* multiplicative_expr: multiplicative_expr PTOK_PERCENT cast_expr  */
+#line 251 "cmdpars.y"
+                                             { (yyval.number)= (yyvsp[-2].number) % (yyvsp[0].number); }
 #line 1554 "y.tab.c"
     break;
 
-  case 24:
-#line 250 "cmdpars.y"
-                                           { (yyval.number)= (yyvsp[-2].number) / (yyvsp[0].number); }
+  case 26: /* additive_expr: multiplicative_expr  */
+#line 255 "cmdpars.y"
+                      { (yyval.number)= (yyvsp[0].number); }
 #line 1560 "y.tab.c"
     break;
 
-  case 25:
-#line 251 "cmdpars.y"
-                                             { (yyval.number)= (yyvsp[-2].number) % (yyvsp[0].number); }
+  case 27: /* additive_expr: additive_expr PTOK_PLUS multiplicative_expr  */
+#line 256 "cmdpars.y"
+                                              { (yyval.number)= (yyvsp[-2].number) + (yyvsp[0].number); }
 #line 1566 "y.tab.c"
     break;
 
-  case 26:
-#line 255 "cmdpars.y"
-                      { (yyval.number)= (yyvsp[0].number); }
+  case 28: /* additive_expr: additive_expr PTOK_MINUS multiplicative_expr  */
+#line 257 "cmdpars.y"
+                                               { (yyval.number)= (yyvsp[-2].number) - (yyvsp[0].number); }
 #line 1572 "y.tab.c"
     break;
 
-  case 27:
-#line 256 "cmdpars.y"
-                                              { (yyval.number)= (yyvsp[-2].number) + (yyvsp[0].number); }
+  case 29: /* shift_expr: additive_expr  */
+#line 261 "cmdpars.y"
+                { (yyval.number)= (yyvsp[0].number); }
 #line 1578 "y.tab.c"
     break;
 
-  case 28:
-#line 257 "cmdpars.y"
-                                               { (yyval.number)= (yyvsp[-2].number) - (yyvsp[0].number); }
+  case 30: /* shift_expr: shift_expr PTOK_LEFT_OP additive_expr  */
+#line 262 "cmdpars.y"
+                                        { (yyval.number)= (yyvsp[-2].number) << (yyvsp[0].number); }
 #line 1584 "y.tab.c"
     break;
 
-  case 29:
-#line 261 "cmdpars.y"
-                { (yyval.number)= (yyvsp[0].number); }
+  case 31: /* shift_expr: shift_expr PTOK_RIGHT_OP additive_expr  */
+#line 263 "cmdpars.y"
+                                         { (yyval.number)= (yyvsp[-2].number) >> (yyvsp[0].number); }
 #line 1590 "y.tab.c"
     break;
 
-  case 30:
-#line 262 "cmdpars.y"
-                                        { (yyval.number)= (yyvsp[-2].number) << (yyvsp[0].number); }
+  case 32: /* relational_expr: shift_expr  */
+#line 267 "cmdpars.y"
+             { (yyval.number)= (yyvsp[0].number); }
 #line 1596 "y.tab.c"
     break;
 
-  case 31:
-#line 263 "cmdpars.y"
-                                         { (yyval.number)= (yyvsp[-2].number) >> (yyvsp[0].number); }
+  case 33: /* relational_expr: relational_expr PTOK_LESS shift_expr  */
+#line 268 "cmdpars.y"
+                                       { (yyval.number)= ((yyvsp[-2].number) < (yyvsp[0].number))?1:0; }
 #line 1602 "y.tab.c"
     break;
 
-  case 32:
-#line 267 "cmdpars.y"
-             { (yyval.number)= (yyvsp[0].number); }
+  case 34: /* relational_expr: relational_expr PTOK_GREATHER shift_expr  */
+#line 269 "cmdpars.y"
+                                           { (yyval.number)= ((yyvsp[-2].number) > (yyvsp[0].number))?1:0; }
 #line 1608 "y.tab.c"
     break;
 
-  case 33:
-#line 268 "cmdpars.y"
-                                       { (yyval.number)= ((yyvsp[-2].number) < (yyvsp[0].number))?1:0; }
+  case 35: /* relational_expr: relational_expr PTOK_LE_OP shift_expr  */
+#line 270 "cmdpars.y"
+                                        { (yyval.number)= ((yyvsp[-2].number) <= (yyvsp[0].number))?1:0; }
 #line 1614 "y.tab.c"
     break;
 
-  case 34:
-#line 269 "cmdpars.y"
-                                           { (yyval.number)= ((yyvsp[-2].number) > (yyvsp[0].number))?1:0; }
+  case 36: /* relational_expr: relational_expr PTOK_GE_OP shift_expr  */
+#line 271 "cmdpars.y"
+                                        { (yyval.number)= ((yyvsp[-2].number) >= (yyvsp[0].number))?1:0; }
 #line 1620 "y.tab.c"
     break;
 
-  case 35:
-#line 270 "cmdpars.y"
-                                        { (yyval.number)= ((yyvsp[-2].number) <= (yyvsp[0].number))?1:0; }
+  case 37: /* equality_expr: relational_expr  */
+#line 275 "cmdpars.y"
+                  { (yyval.number)= (yyvsp[0].number); }
 #line 1626 "y.tab.c"
     break;
 
-  case 36:
-#line 271 "cmdpars.y"
-                                        { (yyval.number)= ((yyvsp[-2].number) >= (yyvsp[0].number))?1:0; }
+  case 38: /* equality_expr: equality_expr PTOK_EQ_OP relational_expr  */
+#line 276 "cmdpars.y"
+                                           { (yyval.number)= ((yyvsp[-2].number)==(yyvsp[0].number))?1:0; }
 #line 1632 "y.tab.c"
     break;
 
-  case 37:
-#line 275 "cmdpars.y"
-                  { (yyval.number)= (yyvsp[0].number); }
+  case 39: /* equality_expr: equality_expr PTOK_NE_OP relational_expr  */
+#line 277 "cmdpars.y"
+                                           { (yyval.number)= ((yyvsp[-2].number)!=(yyvsp[0].number))?1:0; }
 #line 1638 "y.tab.c"
     break;
 
-  case 38:
-#line 276 "cmdpars.y"
-                                           { (yyval.number)= ((yyvsp[-2].number)==(yyvsp[0].number))?1:0; }
+  case 40: /* and_expr: equality_expr  */
+#line 281 "cmdpars.y"
+                { (yyval.number)= (yyvsp[0].number); }
 #line 1644 "y.tab.c"
     break;
 
-  case 39:
-#line 277 "cmdpars.y"
-                                           { (yyval.number)= ((yyvsp[-2].number)!=(yyvsp[0].number))?1:0; }
+  case 41: /* and_expr: and_expr PTOK_AMPERSAND equality_expr  */
+#line 282 "cmdpars.y"
+                                        { (yyval.number)= (yyvsp[-2].number) & (yyvsp[0].number); }
 #line 1650 "y.tab.c"
     break;
 
-  case 40:
-#line 281 "cmdpars.y"
-                { (yyval.number)= (yyvsp[0].number); }
+  case 42: /* exclusive_or_expr: and_expr  */
+#line 286 "cmdpars.y"
+           { (yyval.number)= (yyvsp[0].number); }
 #line 1656 "y.tab.c"
     break;
 
-  case 41:
-#line 282 "cmdpars.y"
-                                        { (yyval.number)= (yyvsp[-2].number) & (yyvsp[0].number); }
+  case 43: /* exclusive_or_expr: exclusive_or_expr PTOK_CIRCUM and_expr  */
+#line 287 "cmdpars.y"
+                                         { (yyval.number)= (yyvsp[-2].number) ^ (yyvsp[0].number); }
 #line 1662 "y.tab.c"
     break;
 
-  case 42:
-#line 286 "cmdpars.y"
-           { (yyval.number)= (yyvsp[0].number); }
+  case 44: /* inclusive_or_expr: exclusive_or_expr  */
+#line 291 "cmdpars.y"
+                    { (yyval.number)= (yyvsp[0].number); }
 #line 1668 "y.tab.c"
     break;
 
-  case 43:
-#line 287 "cmdpars.y"
-                                         { (yyval.number)= (yyvsp[-2].number) ^ (yyvsp[0].number); }
+  case 45: /* inclusive_or_expr: inclusive_or_expr PTOK_PIPE exclusive_or_expr  */
+#line 292 "cmdpars.y"
+                                                { (yyval.number)= (yyvsp[-2].number) | (yyvsp[0].number); }
 #line 1674 "y.tab.c"
     break;
 
-  case 44:
-#line 291 "cmdpars.y"
+  case 46: /* logical_and_expr: inclusive_or_expr  */
+#line 296 "cmdpars.y"
                     { (yyval.number)= (yyvsp[0].number); }
 #line 1680 "y.tab.c"
     break;
 
-  case 45:
-#line 292 "cmdpars.y"
-                                                { (yyval.number)= (yyvsp[-2].number) | (yyvsp[0].number); }
+  case 47: /* logical_and_expr: logical_and_expr PTOK_AND_OP inclusive_or_expr  */
+#line 297 "cmdpars.y"
+                                                 { (yyval.number)= ((yyvsp[-2].number) && (yyvsp[0].number))?1:0; }
 #line 1686 "y.tab.c"
     break;
 
-  case 46:
-#line 296 "cmdpars.y"
-                    { (yyval.number)= (yyvsp[0].number); }
+  case 48: /* logical_or_expr: logical_and_expr  */
+#line 301 "cmdpars.y"
+                   { (yyval.number)= (yyvsp[0].number); }
 #line 1692 "y.tab.c"
     break;
 
-  case 47:
-#line 297 "cmdpars.y"
-                                                 { (yyval.number)= ((yyvsp[-2].number) && (yyvsp[0].number))?1:0; }
+  case 49: /* logical_or_expr: logical_or_expr PTOK_OR_OP logical_and_expr  */
+#line 302 "cmdpars.y"
+                                              { (yyval.number)= ((yyvsp[-2].number) || (yyvsp[0].number))?1:0; }
 #line 1698 "y.tab.c"
     break;
 
-  case 48:
-#line 301 "cmdpars.y"
-                   { (yyval.number)= (yyvsp[0].number); }
+  case 50: /* conditional_expr: logical_or_expr  */
+#line 306 "cmdpars.y"
+                  { (yyval.number)= (yyvsp[0].number); }
 #line 1704 "y.tab.c"
     break;
 
-  case 49:
-#line 302 "cmdpars.y"
-                                              { (yyval.number)= ((yyvsp[-2].number) || (yyvsp[0].number))?1:0; }
+  case 51: /* conditional_expr: logical_or_expr PTOK_QUESTION expr PTOK_COLON conditional_expr  */
+#line 307 "cmdpars.y"
+                                                                 { (yyval.number)= ((yyvsp[-4].number))?((yyvsp[-2].number)):((yyvsp[0].number)); }
 #line 1710 "y.tab.c"
     break;
 
-  case 50:
-#line 306 "cmdpars.y"
-                  { (yyval.number)= (yyvsp[0].number); }
+  case 52: /* assignment_expr: conditional_expr  */
+#line 311 "cmdpars.y"
+                   { (yyval.number)= (yyvsp[0].number); }
 #line 1716 "y.tab.c"
     break;
 
-  case 51:
-#line 307 "cmdpars.y"
-                                                                 { (yyval.number)= ((yyvsp[-4].number))?((yyvsp[-2].number)):((yyvsp[0].number)); }
-#line 1722 "y.tab.c"
-    break;
-
-  case 52:
-#line 311 "cmdpars.y"
-                   { (yyval.number)= (yyvsp[0].number); }
-#line 1728 "y.tab.c"
-    break;
-
-  case 53:
+  case 53: /* assignment_expr: memory assignment_operator assignment_expr  */
 #line 315 "cmdpars.y"
         {
 	  t_mem org= (yyvsp[-2].memory).memory->read((yyvsp[-2].memory).address);
@@ -1770,10 +1758,10 @@ yyreduce:
 	    }
 	  (yyval.number)= (yyvsp[-2].memory).memory->read((yyvsp[-2].memory).address);
 	}
-#line 1774 "y.tab.c"
+#line 1762 "y.tab.c"
     break;
 
-  case 54:
+  case 54: /* assignment_expr: bit PTOK_EQUAL assignment_expr  */
 #line 357 "cmdpars.y"
         {
 	  if ((yyvsp[0].number))
@@ -1789,97 +1777,97 @@ yyreduce:
 	      (yyval.number)= 0;
 	    }
 	}
+#line 1781 "y.tab.c"
+    break;
+
+  case 55: /* assignment_operator: PTOK_EQUAL  */
+#line 374 "cmdpars.y"
+             { (yyval.number)= PTOK_EQUAL; }
+#line 1787 "y.tab.c"
+    break;
+
+  case 56: /* assignment_operator: PTOK_MUL_ASSIGN  */
+#line 375 "cmdpars.y"
+                  { (yyval.number)= PTOK_MUL_ASSIGN; }
 #line 1793 "y.tab.c"
     break;
 
-  case 55:
-#line 374 "cmdpars.y"
-             { (yyval.number)= PTOK_EQUAL; }
+  case 57: /* assignment_operator: PTOK_DIV_ASSIGN  */
+#line 376 "cmdpars.y"
+                  { (yyval.number)= PTOK_DIV_ASSIGN; }
 #line 1799 "y.tab.c"
     break;
 
-  case 56:
-#line 375 "cmdpars.y"
-                  { (yyval.number)= PTOK_MUL_ASSIGN; }
+  case 58: /* assignment_operator: PTOK_MOD_ASSIGN  */
+#line 377 "cmdpars.y"
+                  { (yyval.number)= PTOK_MOD_ASSIGN; }
 #line 1805 "y.tab.c"
     break;
 
-  case 57:
-#line 376 "cmdpars.y"
-                  { (yyval.number)= PTOK_DIV_ASSIGN; }
+  case 59: /* assignment_operator: PTOK_ADD_ASSIGN  */
+#line 378 "cmdpars.y"
+                  { (yyval.number)= PTOK_ADD_ASSIGN; }
 #line 1811 "y.tab.c"
     break;
 
-  case 58:
-#line 377 "cmdpars.y"
-                  { (yyval.number)= PTOK_MOD_ASSIGN; }
+  case 60: /* assignment_operator: PTOK_SUB_ASSIGN  */
+#line 379 "cmdpars.y"
+                  { (yyval.number)= PTOK_SUB_ASSIGN; }
 #line 1817 "y.tab.c"
     break;
 
-  case 59:
-#line 378 "cmdpars.y"
-                  { (yyval.number)= PTOK_ADD_ASSIGN; }
+  case 61: /* assignment_operator: PTOK_LEFT_ASSIGN  */
+#line 380 "cmdpars.y"
+                   { (yyval.number)= PTOK_LEFT_ASSIGN; }
 #line 1823 "y.tab.c"
     break;
 
-  case 60:
-#line 379 "cmdpars.y"
-                  { (yyval.number)= PTOK_SUB_ASSIGN; }
+  case 62: /* assignment_operator: PTOK_RIGHT_ASSIGN  */
+#line 381 "cmdpars.y"
+                    { (yyval.number)= PTOK_RIGHT_ASSIGN; }
 #line 1829 "y.tab.c"
     break;
 
-  case 61:
-#line 380 "cmdpars.y"
-                   { (yyval.number)= PTOK_LEFT_ASSIGN; }
+  case 63: /* assignment_operator: PTOK_AND_ASSIGN  */
+#line 382 "cmdpars.y"
+                  { (yyval.number)= PTOK_AND_ASSIGN; }
 #line 1835 "y.tab.c"
     break;
 
-  case 62:
-#line 381 "cmdpars.y"
-                    { (yyval.number)= PTOK_RIGHT_ASSIGN; }
+  case 64: /* assignment_operator: PTOK_XOR_ASSIGN  */
+#line 383 "cmdpars.y"
+                  { (yyval.number)= PTOK_XOR_ASSIGN; }
 #line 1841 "y.tab.c"
     break;
 
-  case 63:
-#line 382 "cmdpars.y"
-                  { (yyval.number)= PTOK_AND_ASSIGN; }
+  case 65: /* assignment_operator: PTOK_OR_ASSIGN  */
+#line 384 "cmdpars.y"
+                 { (yyval.number)= PTOK_OR_ASSIGN; }
 #line 1847 "y.tab.c"
     break;
 
-  case 64:
-#line 383 "cmdpars.y"
-                  { (yyval.number)= PTOK_XOR_ASSIGN; }
+  case 66: /* expr: assignment_expr  */
+#line 388 "cmdpars.y"
+                  { (yyval.number)= (yyvsp[0].number); }
 #line 1853 "y.tab.c"
     break;
 
-  case 65:
-#line 384 "cmdpars.y"
-                 { (yyval.number)= PTOK_OR_ASSIGN; }
+  case 67: /* expr: expr PTOK_COMMA assignment_expr  */
+#line 389 "cmdpars.y"
+                                  { (yyval.number)= (yyvsp[0].number); }
 #line 1859 "y.tab.c"
     break;
 
-  case 66:
-#line 388 "cmdpars.y"
-                  { (yyval.number)= (yyvsp[0].number); }
-#line 1865 "y.tab.c"
-    break;
-
-  case 67:
-#line 389 "cmdpars.y"
-                                  { (yyval.number)= (yyvsp[0].number); }
-#line 1871 "y.tab.c"
-    break;
-
-  case 69:
+  case 69: /* memory: PTOK_MEMORY_OBJECT PTOK_LEFT_BRACKET expr PTOK_RIGHT_BRACKET  */
 #line 395 "cmdpars.y"
           {
 	    (yyval.memory).memory= (yyvsp[-3].memory_object);
 	    (yyval.memory).address= (yyvsp[-1].number);
 	  }
-#line 1880 "y.tab.c"
+#line 1868 "y.tab.c"
     break;
 
-  case 71:
+  case 71: /* bit: memory PTOK_DOT expr  */
 #line 403 "cmdpars.y"
           {
 	    (yyval.bit).memory= (yyvsp[-2].memory).memory;
@@ -1890,11 +1878,11 @@ yyreduce:
 	    if (uc)
 	      (yyval.bit).bit_address= uc->bit_address((yyvsp[-2].memory).memory, (yyvsp[-2].memory).address, (yyvsp[0].number));
 	  }
-#line 1894 "y.tab.c"
+#line 1882 "y.tab.c"
     break;
 
 
-#line 1898 "y.tab.c"
+#line 1886 "y.tab.c"
 
       default: break;
     }
@@ -2054,13 +2042,13 @@ yyabortlab:
 yyexhaustedlab:
   yyerror (YY_("memory exhausted"));
   yyresult = 2;
-  /* Fall through.  */
+  goto yyreturn;
 #endif
 
 
-/*-----------------------------------------------------.
-| yyreturn -- parsing is finished, return the result.  |
-`-----------------------------------------------------*/
+/*-------------------------------------------------------.
+| yyreturn -- parsing is finished, clean up and return.  |
+`-------------------------------------------------------*/
 yyreturn:
   if (yychar != YYEMPTY)
     {

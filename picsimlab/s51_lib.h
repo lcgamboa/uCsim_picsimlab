@@ -14,15 +14,16 @@
 #ifndef S51_LIB_H
 #define S51_LIB_H
 
+#include "globals.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-int s51_init(const char * fname);
-void s51_step(void);
-void s51_set_port(unsigned char port, unsigned char value);
-unsigned char s51_get_port(unsigned char port);   
-
+cl_sim * s51_init(cl_app * app );
+void s51_init_hw(cl_sim * sim);
+void s51_set_pin(unsigned char port, unsigned char pin, unsigned char value);
+unsigned char s51_get_pin(unsigned char port, unsigned char pin);   
+unsigned char s51_get_port(unsigned char port);  
 #ifdef __cplusplus
 }
 #endif

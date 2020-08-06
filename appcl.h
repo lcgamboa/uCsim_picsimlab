@@ -84,8 +84,8 @@ public:
 class cl_app: public cl_base
 {
 protected:
-  class cl_commander_base *commander;
 public:
+  class cl_commander_base *commander;
   class cl_sim *sim;
   class cl_ustrings *in_files;
   class cl_options *options;
