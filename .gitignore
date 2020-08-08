@@ -22,3 +22,8 @@ hc08.src/shc08
 html/
 relay
 libtool
+*.dll
+*.exe
+*.a
+*.aw
+*.aw32

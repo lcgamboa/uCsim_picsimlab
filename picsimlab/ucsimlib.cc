@@ -56,7 +56,7 @@ static sim_type Type;
 static int write_hex(unsigned char * mem, int size, const char * fname);
 
 int
-ucsim_init(const char * cpu, const char * freq, const char * fname, const char * serial)
+ucsim_init(const char * cpu, const char * freq, const char * fname, const char * serial, unsigned short dport)
 {
  int retval;
  int i;
@@ -114,12 +114,13 @@ ucsim_init(const char * cpu, const char * freq, const char * fname, const char *
   }
 
  strcpy (argv[0], "./s51");
- strcpy (argv[1], fname);
- sprintf (argv[2], "-t%s", cpu);
- sprintf (argv[3], "-s%s", serial);
- sprintf (argv[4], "-X%s", freq);
- strcpy (argv[5], "-g");
- strcpy (argv[6], "-Z2000");
+ sprintf (argv[1], "-t%s", cpu);
+ sprintf (argv[2], "-s%s", serial);
+ sprintf (argv[3], "-X%s", freq);
+ strcpy (argv[4], "-g");
+ sprintf (argv[5], "-Z%i",dport);
+ strcpy (argv[6], fname);
+ 
  
  optind = 1;
 

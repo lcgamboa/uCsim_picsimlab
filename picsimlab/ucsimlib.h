@@ -18,7 +18,7 @@
 extern "C" {
 #endif
     
-int ucsim_init(const char * cpu, const char * freq, const char * fname, const char * serial );
+int ucsim_init(const char * cpu, const char * freq, const char * fname, const char * serial, unsigned short dport);
 void ucsim_end(void);
 void ucsim_step(void);
 void ucsim_set_pin(unsigned char port, unsigned char pin, unsigned char value);
