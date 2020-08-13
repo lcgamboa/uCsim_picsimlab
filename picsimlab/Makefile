@@ -1,33 +1,27 @@
+include Makefile.Common
 
+CXX=g++
+AR=ar
 
-CPPFLAGS= -g -O2 -I. -I.. -I../cmd.src -I../sim.src -I../gui.src 
+prefix = /usr/local
+includedir = ${prefix}/include/ucsim
+libdir = ${prefix}/lib
 
-s51_OBJECTS_SHARED :=$(shell cd ..; $(MAKE) -f s51.src/Makefile  -f picsimlab/print.mak print-OBJECTS_SHARED)
-stm8_OBJECTS_SHARED:=$(shell cd ..; $(MAKE) -f stm8.src/Makefile -f picsimlab/print.mak print-OBJECTS_SHARED)
-z80_OBJECTS_SHARED :=$(shell cd ..; $(MAKE) -f z80.src/Makefile  -f picsimlab/print.mak print-OBJECTS_SHARED)
+LIBHEADERFILES := ucsimlib.h
 
-
-LIBS = ../libcmd.a  ../libguitool.a ../libguiucsim.a  ../libsim.a  ../libucsimutil.a 
-LIBS+= ../s51.src/libs51.a  ../stm8.src/libstm8.a ../z80.src/libz80.a
-
-
-all: s51 z80 stm8
+all:  ${PICSIMLAB_OBJECTS}
 	-rm -f libucsim.a
-	ar cqT libucsim.a $(LIBS) 
-	printf 'create libucsim.a\naddlib libucsim.a\nsave\nend\n' > /tmp/arfile
-	ar -M < /tmp/arfile
-	#gcc -shared -Wl,--whole-archive libucsim.a -o libucsim.so
-	g++ $(CPPFLAGS) s51_alone.cc libucsim.a -o s51_alone
-		
-
-s51: ucsimlib.o s51_lib.o
-	cd ../s51.src; ar rcsv libs51.a ${s51_OBJECTS_SHARED} ../picsimlab/ucsimlib.o ../picsimlab/s51_lib.o
-
-stm8: sstm8_lib.o
-	cd ../stm8.src; ar rcsv libstm8.a ${stm8_OBJECTS_SHARED} ../picsimlab/sstm8_lib.o
-
-z80: sz80_lib.o
-	cd ../z80.src; ar rcsv libz80.a ${z80_OBJECTS_SHARED}  ../picsimlab/sz80_lib.o
+	$(AR) rcvs libucsim.a ${ALL_OBJECTS}
+	$(CXX) -shared -Wl,-soname,libucsim.so -o libucsim.so  ${ALL_OBJECTS}
+	$(CXX) $(CPPFLAGS) s51_alone.cc libucsim.a -o s51_alone
+	
 
 clean:
-	rm -rf *.o libucsim.a s51_alone libucsim.o
+	rm -rf *.o s51_alone libucsim.o libucsim.so 
+
+install: all
+	strip libucsim.so
+	cp -dvf libucsim.so ${libdir}
+	mkdir -p ${includedir}
+	cp -dvf $(LIBHEADERFILES) ${includedir}
+	chmod 644 ${includedir}/*

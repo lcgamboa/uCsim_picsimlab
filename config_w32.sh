@@ -4,4 +4,4 @@ RANLIB=i686-w64-mingw32-ranlib
 DLLTOOL=i686-w64-mingw32-dlltool
 LD=i686-w64-mingw32-ld
 NM=i686-w64-mingw32-nm
-./configure --host=i686-w64-mingw32
+./configure --host=i686-w64-mingw32 CFLAGS=-fPIC CXXFLAGS=-fPIC

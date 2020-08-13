@@ -106,7 +106,7 @@ ucsim_init(const char * cpu, const char * freq, const char * fname, const char *
  while (!Type);
 
 
-  char **argv = new char *[NARGS + 1];
+  char **argv = new char *[NARGS];
 
  for (i = 0; i < NARGS; i++)
   {
@@ -120,7 +120,6 @@ ucsim_init(const char * cpu, const char * freq, const char * fname, const char *
  strcpy (argv[4], "-g");
  sprintf (argv[5], "-Z%i",dport);
  strcpy (argv[6], fname);
- 
  
  optind = 1;
 
