@@ -41,15 +41,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 #include "../stm8.src/portcl.h"
 
 static cl_port * p[6];
+static cl_simstm8 * sim;
 
 cl_sim * 
 sstm8_init(cl_app * app )
 {
-   return new cl_simstm8 (app);
+   sim= new cl_simstm8 (app);
+   return sim;
 }
 
+void
+sstm8_reset (void)
+{
+ sim->uc->reset ();
+}
 
- void sstm8_init_hw(cl_sim * sim)
+ void sstm8_init_hw(void)
  {
  int idx = 0;
  p[0] = (cl_port*) sim->uc->get_hw (HW_PORT, &idx); // last param is the port number
@@ -90,8 +97,8 @@ sstm8_get_pin(unsigned char port, unsigned char pin)
  return  ((p[port]->cell_p->read () & (1 << pin)) > 0);
 }
 
-unsigned char
+unsigned short
 sstm8_get_port(unsigned char port)
 {
- return p[port]->cell_p->read ();
+ return (p[port]->cell_dir->read () << 8) | p[port]->cell_p->read (); 
 }

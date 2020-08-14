@@ -23,7 +23,7 @@ void ucsim_end(void);
 void ucsim_step(void);
 void ucsim_set_pin(unsigned char port, unsigned char pin, unsigned char value);
 unsigned char ucsim_get_pin(unsigned char port, unsigned char pin);   
-unsigned char ucsim_get_port(unsigned char port);  
+unsigned short ucsim_get_port(unsigned char port); //return port dir and value 
 void ucsim_reset(void);
 int  ucsim_dump(const char * fname);
 #ifdef __cplusplus

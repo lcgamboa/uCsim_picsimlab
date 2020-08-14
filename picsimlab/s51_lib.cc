@@ -40,16 +40,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 
 #include "s51_lib.h"
 
+static cl_sim51 * sim;
+
 static cl_port * p[4];
 
 cl_sim * 
 s51_init(cl_app * app )
 {
-   return new cl_sim51 (app);
+   sim = new cl_sim51 (app);
+   return sim;
+}
+
+void
+s51_reset (void)
+{
+ sim->uc->reset ();
 }
 
 
- void s51_init_hw(cl_sim * sim)
+ void s51_init_hw(void)
  {
  int idx = 0;
  p[0] = (cl_port*) sim->uc->get_hw (HW_PORT, &idx); // last param is the port number
@@ -107,8 +116,8 @@ s51_get_pin(unsigned char port, unsigned char pin)
   */
 }
 
-unsigned char
+unsigned short
 s51_get_port(unsigned char port)
 {
- return p[port]->cell_p->read ();
+ return (p[port]->cell_p->read () << 8)| p[port]->cell_p->read ();
 }

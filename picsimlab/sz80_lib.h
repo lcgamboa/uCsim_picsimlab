@@ -20,10 +20,12 @@
 extern "C" {
 #endif
 cl_sim * sz80_init(cl_app * app );
-void sz80_init_hw(cl_sim * sim);
+void sz80_init_hw(void);
+void sz80_reset (void);
 void sz80_set_pin(unsigned char port, unsigned char pin, unsigned char value);
 unsigned char sz80_get_pin(unsigned char port, unsigned char pin);   
-unsigned char sz80_get_port(unsigned char port);  
+unsigned short sz80_get_port(unsigned char port); //return port dir and value 
+void sz80_updated_hw(void);
 #ifdef __cplusplus
 }
 #endif

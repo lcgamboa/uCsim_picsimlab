@@ -28,3 +28,7 @@ libtool
 *.aw
 *.aw32
 *.ajs
+cmd.src/cmdpars.cc
+cmd.src/cmdpars.hh
+picsimlab/libucsim.so
+picsimlab/ucsim

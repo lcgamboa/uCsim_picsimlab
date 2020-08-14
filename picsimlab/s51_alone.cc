@@ -9,9 +9,11 @@ main()
  unsigned char val[4];
  unsigned char v = 0xD1;
 
- ucsim_init ("C51", "8M", "/home/gamboa/microcontroladores/sdcc_examples/8051/blink.hex", "/dev/tnt2",1234);
+ //ucsim_init ("C51", "8M", "/home/gamboa/microcontroladores/sdcc_examples/8051/blink.hex", "/dev/tnt2",1234);
  //ucsim_init ("STM8S103", "8M", "/home/gamboa/microcontroladores/sdcc_examples/STM8/led.hex", "/dev/tnt2",1234);
  //ucsim_init ("Z80", "8M", "/home/gamboa/microcontroladores/sdcc_examples/Z80/led.hex", "/dev/tnt2",1234);
+ ucsim_init ("Z80", "8M", "/home/gamboa/microcontroladores/z80_asm/hello.hex", "/dev/tnt2",1234);
+ 
  while (1)
   {
    //ucsim_set_pin (0, 0, v);

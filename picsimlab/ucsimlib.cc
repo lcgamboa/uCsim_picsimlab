@@ -39,14 +39,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 #include "sstm8_lib.h"
 
 /*
- * Main function of the Simulator of MCS51. Everything starts here.
+ * Main function 
  */
 
 
 static class cl_sim *sim;
 
-
-typedef enum {SNONE=0,S51,SSTM8,SZ80} sim_type;    
+typedef enum
+{
+ SNONE = 0, S51, SSTM8, SZ80
+} sim_type;
 
 
 static sim_type Type;
@@ -106,7 +108,7 @@ ucsim_init(const char * cpu, const char * freq, const char * fname, const char *
  while (!Type);
 
 
-  char **argv = new char *[NARGS];
+ char **argv = new char *[NARGS];
 
  for (i = 0; i < NARGS; i++)
   {
@@ -118,9 +120,9 @@ ucsim_init(const char * cpu, const char * freq, const char * fname, const char *
  sprintf (argv[2], "-s%s", serial);
  sprintf (argv[3], "-X%s", freq);
  strcpy (argv[4], "-g");
- sprintf (argv[5], "-Z%i",dport);
+ sprintf (argv[5], "-Z%i", dport);
  strcpy (argv[6], fname);
- 
+
  optind = 1;
 
  switch (Type)
@@ -162,7 +164,7 @@ ucsim_init(const char * cpu, const char * freq, const char * fname, const char *
 
  for (i = 0; i < argc; i++)
   {
-    delete[] argv[i];
+   delete[] argv[i];
   }
  delete[] argv;
 
@@ -171,13 +173,13 @@ ucsim_init(const char * cpu, const char * freq, const char * fname, const char *
   {
 
   case SZ80:
-   sz80_init_hw (sim);
+   sz80_init_hw ();
    break;
   case SSTM8:
-   sstm8_init_hw (sim);
+   sstm8_init_hw ();
    break;
   case S51:
-   s51_init_hw (sim);
+   s51_init_hw ();
    break;
   }
  return retval;
@@ -220,7 +222,7 @@ ucsim_get_pin(unsigned char port, unsigned char pin)
  return 0;
 }
 
-unsigned char
+unsigned short
 ucsim_get_port(unsigned char port)
 {
  switch (Type)
@@ -282,6 +284,11 @@ ucsim_step(void)
       application->commander->proc_input ();
     }
    sim->step ();
+   if (Type == SZ80)
+    {
+     sz80_updated_hw ();
+    }
+
    if (jaj && application->commander->frozen_console)
     {
      sim->uc->print_regs (application->commander->frozen_console),
@@ -300,13 +307,25 @@ ucsim_step(void)
   }
 
  application->commander->check ();
+ 
 }
 
 void
 ucsim_reset(void)
 {
-
- sim->uc->reset ();
+  sim->state|= SIM_GO;
+  switch (Type)
+  {
+  case SZ80:
+   return sz80_reset();
+   break;
+  case SSTM8:
+   return sstm8_reset ();
+   break;
+  case S51:
+   return s51_reset ();
+   break;
+  }
 }
 
 int
