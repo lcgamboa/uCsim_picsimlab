@@ -119,5 +119,5 @@ s51_get_pin(unsigned char port, unsigned char pin)
 unsigned short
 s51_get_port(unsigned char port)
 {
- return (p[port]->cell_p->read () << 8)| p[port]->cell_p->read ();
+ return (p[port]->port_pins << 8)| p[port]->cell_p->read ();
 }
