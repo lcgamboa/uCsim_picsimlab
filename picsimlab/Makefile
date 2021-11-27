@@ -3,7 +3,8 @@ include Makefile.Common
 CXX=g++
 AR=ar
 
-prefix = /usr/local
+DESTDIR ?= /usr/local
+prefix = $(DESTDIR)
 includedir = ${prefix}/include/ucsim
 libdir = ${prefix}/lib
 
