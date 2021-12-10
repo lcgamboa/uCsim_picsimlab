@@ -21,7 +21,7 @@ clean:
 	rm -rf *.o s51_alone libucsim.o libucsim.so 
 
 install: all
-	strip libucsim.so
+	#strip libucsim.so
 	cp -dvf libucsim.so ${libdir}
 	mkdir -p ${includedir}
 	cp -dvf $(LIBHEADERFILES) ${includedir}
