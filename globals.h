@@ -48,7 +48,7 @@ extern struct id_element error_type_names[];
 extern char *warranty;
 extern char *copying;
 
-extern struct cpu_entry *cpus;
+extern struct cpu_entry *cpus_;
 extern struct cpu_entry cpus_51[];
 extern struct cpu_entry cpus_z80[];
 extern struct cpu_entry cpus_hc08[];

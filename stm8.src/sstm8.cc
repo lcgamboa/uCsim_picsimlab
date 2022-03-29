@@ -40,7 +40,7 @@ main(int argc, char *argv[])
 {
   class cl_sim *sim;
 
-  cpus= cpus_stm8;
+  cpus_= cpus_stm8;
   application= new cl_app();
   application->set_name("sstm8");
   application->init(argc, argv);

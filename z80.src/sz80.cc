@@ -40,7 +40,7 @@ main(int argc, char *argv[])
 {
   class cl_sim *sim;
 
-  cpus= cpus_z80;
+  cpus_= cpus_z80;
   application= new cl_app();
   application->set_name("sz80");
   application->init(argc, argv);

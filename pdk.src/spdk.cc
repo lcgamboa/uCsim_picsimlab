@@ -40,7 +40,7 @@ main(int argc, char *argv[])
 {
   class cl_sim *sim;
 
-  cpus= cpus_pdk;
+  cpus_= cpus_pdk;
   application= new cl_app();
   application->set_name("spdk");
   application->init(argc, argv);

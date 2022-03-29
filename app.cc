@@ -710,19 +710,19 @@ cl_app::proc_arguments(int argc, char *argv[])
 	break;
       case 'H':
 	{
-	  if (!cpus)
+	  if (!cpus_)
 	    {
 	      fprintf(stderr, "CPU type is not selectable\n");
 	      exit(0);
 	    }
 	  i= 0;
 	  printf("%-20s%-30s%-30s\n", "Parameter", "Family", "Subtype");
-	  while (cpus[i].type_str != NULL)
+	  while (cpus_[i].type_str != NULL)
 	    {
 	      printf("%-20s%-30s%-30s\n",
-		     cpus[i].type_str,
-		     cpus[i].type_help,
-		     cpus[i].sub_help);
+		     cpus_[i].type_str,
+		     cpus_[i].type_help,
+		     cpus_[i].sub_help);
 	      i++;
 	    }
 	  exit(0);

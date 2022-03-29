@@ -128,13 +128,13 @@ ucsim_init(const char * cpu, const char * freq, const char * fname, const char *
  switch (Type)
   {
   case SZ80:
-   cpus = cpus_z80;
+   cpus_ = cpus_z80;
    break;
   case SSTM8:
-   cpus = cpus_stm8;
+   cpus_ = cpus_stm8;
    break;
   case S51:
-   cpus = cpus_51;
+   cpus_ = cpus_51;
    break;
   }
  application = new cl_app ();

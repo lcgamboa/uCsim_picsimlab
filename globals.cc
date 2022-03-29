@@ -362,7 +362,7 @@ const char *copying=
  * Information about different type of CPUs
  */
 
-struct cpu_entry *cpus= 0;
+struct cpu_entry *cpus_= 0;
 
 struct cpu_entry cpus_51[]=
   {
