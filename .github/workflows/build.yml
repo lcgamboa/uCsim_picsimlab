@@ -11,3 +11,13 @@ jobs:
           make
           cd picsimlab
           make
+  build-macos:
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          ./configure
+          make
+          cd picsimlab
+          make
