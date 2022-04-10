@@ -1,0 +1,13 @@
+name: Build uCsim
+on: [push]
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          ./config_linux.sh
+          make
+          cd picsimlab
+          make
