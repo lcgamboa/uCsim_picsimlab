@@ -32,7 +32,7 @@ clean:
 
 install: all
 	#strip ${LIBFILE}
-	cp -dvf ${LIBFILE} ${libdir}
-	mkdir -p ${includedir}
-	cp -dvf $(LIBHEADERFILES) ${includedir}
-	chmod 644 ${includedir}/*
+	install -d ${libdir}
+	install -m 755 ${LIBFILE} ${libdir}
+	install -d ${includedir}
+	install -m 644 ${LIBHEADERFILES} ${includedir}
