@@ -14,16 +14,16 @@ LIBHEADERFILES := ucsimlib.h
 LIBNAME := libucsim
 ifeq ($(OS),Darwin)
 	LIBFILE := ${LIBNAME}.dylib
-	SHLIB_OPT := -install_name
+	SHLIB_OPT := -install_name,"@rpath/${LIBFILE}"
 else
 	LIBFILE := ${LIBNAME}.so
-	SHLIB_OPT := -soname
+	SHLIB_OPT := -soname,"${LIBFILE}"
 endif
 
 all:  ${PICSIMLAB_OBJECTS}
 	-rm -f ${LIBNAME}.a
 	$(AR) rcvs ${LIBNAME}.a ${ALL_OBJECTS}
-	$(CXX) -shared -Wl,${SHLIB_OPT},${LIBFILE} -o ${LIBFILE}  ${ALL_OBJECTS}
+	$(CXX) -shared -Wl,${SHLIB_OPT} -o ${LIBFILE}  ${ALL_OBJECTS}
 	$(CXX) $(CPPFLAGS) s51_alone.cc ${LIBNAME}.a -o s51_alone
 	
 
