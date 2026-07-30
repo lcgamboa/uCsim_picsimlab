@@ -2,7 +2,7 @@
  * Simulator of microcontrollers (s51.cc)
  *
  * Copyright (C) 1999,99 Drotos Daniel, Talker Bt.
- * 
+ *
  * To contact author send email to drdani@mazsola.iit.uni-miskolc.hu
  *
  */
@@ -25,13 +25,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA. */
 /*@1@*/
 
-//#include "ddconfig.h"
+// #include "ddconfig.h"
 
 #include <getopt.h>
 
 // prj
 #include "globals.h"
-
 
 #include "ucsimlib.h"
 #include "s51_lib.h"
@@ -39,385 +38,387 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 #include "sstm8_lib.h"
 
 /*
- * Main function 
+ * Main function
  */
-
 
 static class cl_sim *sim;
 
 typedef enum
 {
- SNONE = 0, S51, SSTM8, SZ80
+  SNONE = 0,
+  S51,
+  SSTM8,
+  SZ80
 } sim_type;
-
 
 static sim_type Type;
 
 #define NARGS 7
 
-static int write_hex(unsigned char * mem, int size, const char * fname);
+static int write_hex(unsigned char *mem, int size, const char *fname);
 
-int
-ucsim_init(const char * cpu, const char * freq, const char * fname, const char * serial, unsigned short dport)
+int ucsim_init(const char *cpu, const char *freq, const char *fname, const char *serial, unsigned short dport)
 {
- int retval;
- int i;
- int argc = NARGS;
+  int retval;
+  int i;
+  int argc = NARGS;
 
- Type = SNONE;
+  Type = SNONE;
 
- int c[3] = {0, 0, 0};
+  int c[3] = {0, 0, 0};
 
- do
+  do
   {
 
-   if (cpus_z80[c[0]].type_str != NULL)
+    if (cpus_z80[c[0]].type_str != NULL)
     {
-     if (!strcmp (cpus_z80[c[0]].type_str, cpu))
+      if (!strcmp(cpus_z80[c[0]].type_str, cpu))
       {
-       Type = SZ80;
-       break;
+        Type = SZ80;
+        break;
       }
-     c[0]++;
+      c[0]++;
     }
-   if (cpus_stm8[c[1]].type_str != NULL)
+    if (cpus_stm8[c[1]].type_str != NULL)
     {
-     if (!strcmp (cpus_stm8[c[1]].type_str, cpu))
+      if (!strcmp(cpus_stm8[c[1]].type_str, cpu))
       {
-       Type = SSTM8;
-       break;
+        Type = SSTM8;
+        break;
       }
-     c[1]++;
+      c[1]++;
     }
-   if (cpus_51[c[2]].type_str != NULL)
+    if (cpus_51[c[2]].type_str != NULL)
     {
-     if (!strcmp (cpus_51[c[2]].type_str, cpu))
+      if (!strcmp(cpus_51[c[2]].type_str, cpu))
       {
-       Type = S51;
-       break;
+        Type = S51;
+        break;
       }
-     c[2]++;
+      c[2]++;
     }
 
-   if ((cpus_z80[c[0]].type_str == NULL)&&(cpus_stm8[c[1]].type_str == NULL)&&(cpus_51[c[2]].type_str == NULL))
+    if ((cpus_z80[c[0]].type_str == NULL) && (cpus_stm8[c[1]].type_str == NULL) && (cpus_51[c[2]].type_str == NULL))
     {
-     printf ("Unknown processor!\n");
-     return -1;
+      printf("Unknown processor!\n");
+      return -1;
     }
-  }
- while (!Type);
+  } while (!Type);
 
+  char **argv = new char *[NARGS];
 
- char **argv = new char *[NARGS];
-
- for (i = 0; i < NARGS; i++)
+  for (i = 0; i < NARGS; i++)
   {
-   argv[i] = new char[200];
+    argv[i] = new char[200];
   }
 
- strcpy (argv[0], "./s51");
- sprintf (argv[1], "-t%s", cpu);
- sprintf (argv[2], "-s%s", serial);
- sprintf (argv[3], "-X%s", freq);
- strcpy (argv[4], "-g");
- sprintf (argv[5], "-Z%i", dport);
- strcpy (argv[6], fname);
+  strcpy(argv[0], "./s51");
+  sprintf(argv[1], "-t%s", cpu);
+  sprintf(argv[2], "-X%s", freq);
+  strcpy(argv[3], "-g");
+  sprintf(argv[4], "-Z%i", dport);
 
- optind = 1;
+  if (!strcmp(serial, "None"))
+  {
+    strcpy(argv[5], fname);
+    argc = NARGS -1;
+  }
+  else
+  {
+    sprintf(argv[5], "-s%s", serial);
+    strcpy(argv[6], fname);
+  }
 
- switch (Type)
+  optind = 1;
+
+  switch (Type)
   {
   case SZ80:
-   cpus_ = cpus_z80;
-   break;
+    cpus_ = cpus_z80;
+    break;
   case SSTM8:
-   cpus_ = cpus_stm8;
-   break;
+    cpus_ = cpus_stm8;
+    break;
   case S51:
-   cpus_ = cpus_51;
-   break;
+    cpus_ = cpus_51;
+    break;
   }
- application = new cl_app ();
- application->set_name ("picsimlab");
- application->init (argc, argv);
+  application = new cl_app();
+  application->set_name("picsimlab");
+  application->init(argc, argv);
 
- switch (Type)
+  switch (Type)
   {
   case SZ80:
-   sim = sz80_init (application);
-   break;
+    sim = sz80_init(application);
+    break;
   case SSTM8:
-   sim = sstm8_init (application);
-   break;
+    sim = sstm8_init(application);
+    break;
   case S51:
-   sim = s51_init (application);
-   break;
+    sim = s51_init(application);
+    break;
   }
 
- if (sim->init ())
-  sim->state |= SIM_QUIT;
- application->set_simulator (sim);
+  if (sim->init())
+    sim->state |= SIM_QUIT;
+  application->set_simulator(sim);
 
- sim->state |= SIM_QUIT; //fake out
- retval = application->run ();
- sim->state &= ~SIM_QUIT;
+  sim->state |= SIM_QUIT; // fake out
+  retval = application->run();
+  sim->state &= ~SIM_QUIT;
 
- for (i = 0; i < argc; i++)
+  for (i = 0; i < argc; i++)
   {
-   delete[] argv[i];
+    delete[] argv[i];
   }
- delete[] argv;
+  delete[] argv;
 
-
- switch (Type)
+  switch (Type)
   {
 
   case SZ80:
-   sz80_init_hw ();
-   break;
+    sz80_init_hw();
+    break;
   case SSTM8:
-   sstm8_init_hw ();
-   break;
+    sstm8_init_hw();
+    break;
   case S51:
-   s51_init_hw ();
-   break;
+    s51_init_hw();
+    break;
   }
- return retval;
+  return retval;
 }
 
-void
-ucsim_set_pin(unsigned char port, unsigned char pin, unsigned char value)
+void ucsim_set_pin(unsigned char port, unsigned char pin, unsigned char value)
 {
- switch (Type)
+  switch (Type)
   {
 
   case SZ80:
-   sz80_set_pin (port, pin, value);
-   break;
+    sz80_set_pin(port, pin, value);
+    break;
   case SSTM8:
-   sstm8_set_pin (port, pin, value);
-   break;
+    sstm8_set_pin(port, pin, value);
+    break;
   case S51:
-   s51_set_pin (port, pin, value);
-   break;
+    s51_set_pin(port, pin, value);
+    break;
   }
 }
 
 unsigned char
 ucsim_get_pin(unsigned char port, unsigned char pin)
 {
- switch (Type)
+  switch (Type)
   {
 
   case SZ80:
-   return sz80_get_pin (port, pin);
-   break;
+    return sz80_get_pin(port, pin);
+    break;
   case SSTM8:
-   return sstm8_get_pin (port, pin);
-   break;
+    return sstm8_get_pin(port, pin);
+    break;
   case S51:
-   return s51_get_pin (port, pin);
-   break;
+    return s51_get_pin(port, pin);
+    break;
   }
- return 0;
+  return 0;
 }
 
 unsigned short
 ucsim_get_port(unsigned char port)
 {
- switch (Type)
+  switch (Type)
   {
 
   case SZ80:
-   return sz80_get_port (port);
-   break;
+    return sz80_get_port(port);
+    break;
   case SSTM8:
-   return sstm8_get_port (port);
-   break;
+    return sstm8_get_port(port);
+    break;
   case S51:
-   return s51_get_port (port);
-   break;
+    return s51_get_port(port);
+    break;
   }
- return 0;
+  return 0;
 }
 
-void
-ucsim_end(void)
+void ucsim_end(void)
 {
 
- application->done ();
- delete application;
+  application->done();
+  delete application;
 }
 
 static double input_last_checked = 0;
 static unsigned int cyc = 0;
 
-void
-ucsim_step(void)
+void ucsim_step(void)
 {
- /*
- //serial stuff
- if (cyc - input_last_checked > 10000)
- {
- input_last_checked = cyc;
- if (sim->uc)
- sim->uc->touch ();
- if (application->commander->input_avail ())
- application->commander->proc_input ();
- }
-
- sim->step ();
-
- ++cyc;
-  */
-
- ++cyc;
-
- if (sim->state & SIM_GO)
+  /*
+  //serial stuff
+  if (cyc - input_last_checked > 10000)
   {
-   if (cyc - input_last_checked > 10000)
-    {
-     input_last_checked = cyc;
-     if (sim->uc)
-      sim->uc->touch ();
-     if (application->commander->input_avail ())
-      application->commander->proc_input ();
-    }
-   sim->step ();
-   if (Type == SZ80)
-    {
-     sz80_updated_hw ();
-    }
-
-   if (jaj && application->commander->frozen_console)
-    {
-     sim->uc->print_regs (application->commander->frozen_console),
-         application->commander->frozen_console->dd_printf ("\n");
-    }
-  }
- else
-  {
-   if (application->commander->input_avail ())
-    application->commander->proc_input ();
-   //else
-   // loop_delay ();
-
-   if (sim->uc)
-    sim->uc->touch ();
+  input_last_checked = cyc;
+  if (sim->uc)
+  sim->uc->touch ();
+  if (application->commander->input_avail ())
+  application->commander->proc_input ();
   }
 
- application->commander->check ();
- 
+  sim->step ();
+
+  ++cyc;
+   */
+
+  ++cyc;
+
+  if (sim->state & SIM_GO)
+  {
+    if (cyc - input_last_checked > 10000)
+    {
+      input_last_checked = cyc;
+      if (sim->uc)
+        sim->uc->touch();
+      if (application->commander->input_avail())
+        application->commander->proc_input();
+    }
+    sim->step();
+    if (Type == SZ80)
+    {
+      sz80_updated_hw();
+    }
+
+    if (jaj && application->commander->frozen_console)
+    {
+      sim->uc->print_regs(application->commander->frozen_console),
+          application->commander->frozen_console->dd_printf("\n");
+    }
+  }
+  else
+  {
+    if (application->commander->input_avail())
+      application->commander->proc_input();
+    // else
+    //  loop_delay ();
+
+    if (sim->uc)
+      sim->uc->touch();
+  }
+
+  application->commander->check();
 }
 
-void
-ucsim_reset(void)
+void ucsim_reset(void)
 {
-  sim->state|= SIM_GO;
+  sim->state |= SIM_GO;
   switch (Type)
   {
   case SZ80:
-   return sz80_reset();
-   break;
+    return sz80_reset();
+    break;
   case SSTM8:
-   return sstm8_reset ();
-   break;
+    return sstm8_reset();
+    break;
   case S51:
-   return s51_reset ();
-   break;
+    return s51_reset();
+    break;
   }
 }
 
-int
-ucsim_dump(const char * fname)
+int ucsim_dump(const char *fname)
 {
- unsigned int size = sim->uc->rom->get_size ();
- unsigned char * rom;
+  unsigned int size = sim->uc->rom->get_size();
+  unsigned char *rom;
 
- rom = new unsigned char[size];
+  rom = new unsigned char[size];
 
-
- for (int i = 0; i < size; i++)
+  for (int i = 0; i < size; i++)
   {
 
-   rom[i] = sim->uc->rom->read (i);
+    rom[i] = sim->uc->rom->read(i);
   }
 
- int ret = write_hex (rom, size, fname);
+  int ret = write_hex(rom, size, fname);
 
- delete[] rom;
+  delete[] rom;
 
- return ret;
+  return ret;
 }
 
 static int
-write_hex(unsigned char * mem, int size, const char * fname)
+write_hex(unsigned char *mem, int size, const char *fname)
 {
 
- FILE * fout;
- unsigned char sum;
- unsigned char nb;
- unsigned int iaddr = 0;
- unsigned int i;
- char values[100];
- char tmp[200];
+  FILE *fout;
+  unsigned char sum;
+  unsigned char nb;
+  unsigned int iaddr = 0;
+  unsigned int i;
+  char values[100];
+  char tmp[200];
 
- fout = fopen (fname, "w");
+  fout = fopen(fname, "w");
 
- if (fout)
+  if (fout)
   {
-   //program memory  
-   nb = 0;
-   sum = 0;
-   for (i = 0; i < size; i++)
+    // program memory
+    nb = 0;
+    sum = 0;
+    for (i = 0; i < size; i++)
     {
-     if (i == 0x10000)fprintf (fout, ":020000040001F9\n");
-     if (i == 0x20000)fprintf (fout, ":020000040002F8\n");
-     if (i == 0x30000)fprintf (fout, ":020000040003F7\n");
+      if (i == 0x10000)
+        fprintf(fout, ":020000040001F9\n");
+      if (i == 0x20000)
+        fprintf(fout, ":020000040002F8\n");
+      if (i == 0x30000)
+        fprintf(fout, ":020000040003F7\n");
 
-     if (nb == 0)
+      if (nb == 0)
       {
-       iaddr = i & 0xFFFF;
-       snprintf (values, 99, "%02X", mem[i]);
+        iaddr = i & 0xFFFF;
+        snprintf(values, 99, "%02X", mem[i]);
       }
-     else
+      else
       {
-       snprintf (tmp, 199, "%s%02X", values, mem[i]);
-       strcpy (values, tmp);
+        snprintf(tmp, 199, "%s%02X", values, mem[i]);
+        strcpy(values, tmp);
       }
 
-     nb++;
-     sum += mem[i];
+      nb++;
+      sum += mem[i];
 
-     if (nb == 16)
+      if (nb == 16)
       {
-       sum += nb;
-       sum += (iaddr & 0x00FF);
-       sum += ((iaddr & 0xFF00) >> 8);
-       //printf("sum=%02X %02X %02X\n",sum,~sum,(~sum)+1);
-       sum = (~sum) + 1;
-       fprintf (fout, ":%02X%04X00%s%02X\n", nb, iaddr, values, sum);
-       nb = 0;
-       sum = 0;
+        sum += nb;
+        sum += (iaddr & 0x00FF);
+        sum += ((iaddr & 0xFF00) >> 8);
+        // printf("sum=%02X %02X %02X\n",sum,~sum,(~sum)+1);
+        sum = (~sum) + 1;
+        fprintf(fout, ":%02X%04X00%s%02X\n", nb, iaddr, values, sum);
+        nb = 0;
+        sum = 0;
       }
     }
-   if (nb)
+    if (nb)
     {
-     sum += nb;
-     sum += (iaddr & 0x00FF);
-     sum += ((iaddr & 0xFF00) >> 8);
-     sum = (~sum) + 1;
-     fprintf (fout, ":%02X%04X00%s%02X\n", nb, iaddr, values, sum);
+      sum += nb;
+      sum += (iaddr & 0x00FF);
+      sum += ((iaddr & 0xFF00) >> 8);
+      sum = (~sum) + 1;
+      fprintf(fout, ":%02X%04X00%s%02X\n", nb, iaddr, values, sum);
     }
-   //end
-   fprintf (fout, ":00000001FF\n");
-   fclose (fout);
-   return 0; //no error
+    // end
+    fprintf(fout, ":00000001FF\n");
+    fclose(fout);
+    return 0; // no error
   }
- else
+  else
   {
-   printf ("ERRO: File not found!(%s)\n", fname);
-   return -1;
+    printf("ERRO: File not found!(%s)\n", fname);
+    return -1;
   }
- return 0; //no error
+  return 0; // no error
 }
