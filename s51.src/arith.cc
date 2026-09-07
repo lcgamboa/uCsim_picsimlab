@@ -366,13 +366,13 @@ cl_51core::instruction_84/*inst_div_ab*/(t_mem/*uchar*/ code)
 
   pw= psw->get();
   pw&= ~bmCY;
-  if (!(b= sfr->get(B)))
+  if (!(b= sfr->get(BREG)))
     pw|= bmOV;
   else
     {
       pw&= ~bmOV;
       temp= (ac= acc->get()) / b;
-      sfr->write(B, ac % b);
+      sfr->write(BREG, ac % b);
       acc->write(temp);
     }
   psw->write(pw);
@@ -520,9 +520,9 @@ cl_51core::instruction_a4/*inst_mul_ab*/(t_mem/*uchar*/ code)
 
   pw= psw->get();
   pw&= ~bmCY;
-  temp= (ac= acc->read()) * (b= sfr->get(B));
+  temp= (ac= acc->read()) * (b= sfr->get(BREG));
   acc->write(temp & 0xff);
-  x= sfr->write(B, (temp >> 8) & 0xff);
+  x= sfr->write(BREG, (temp >> 8) & 0xff);
   SFR_SET_BIT(x/*sfr->get(B)*/, PSW, bmOV);
   SFR_SET_BIT(0, PSW, bmCY);
   tick(3);

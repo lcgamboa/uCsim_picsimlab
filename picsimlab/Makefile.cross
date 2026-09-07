@@ -14,9 +14,9 @@ all:  ${PICSIMLAB_OBJECTS}
 	-rm -f libucsim.a
 	$(AR) rcvs libucsim.a ${ALL_OBJECTS}
 	$(CXX) -shared -Wl,--out-implib,ucsim.dll.a -Wl,--no-undefined -Wl,--enable-runtime-pseudo-reloc \
-	-o ucsim.dll  ${ALL_OBJECTS} -lws2_32
+	-o ucsim.dll  ${ALL_OBJECTS} -lws2_32 -static-libgcc -static-libstdc++  -Wl,--exclude-libs,libgcc.a:libgcc_eh.a:libstdc++.a
 	mv -f libucsim.a libucsim.aw
-	$(CXX) $(CPPFLAGS) s51_alone.cc libucsim.aw -o s51_alone_64.exe -lws2_32
+	$(CXX) $(CPPFLAGS) s51_alone.cc libucsim.aw -o s51_alone_64.exe -lws2_32 -static-libgcc -static-libstdc++
 	
 install: all
 	$(STRIP) ucsim.dll 
